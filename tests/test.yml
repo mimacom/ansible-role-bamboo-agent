@@ -1,0 +1,28 @@
+---
+- hosts: all
+  become: true
+  vars:
+    bamboo_master:
+      version: 6.1.1
+      fqdn: bamboo.mimacom.com
+      https: true
+      port: 443
+#    bamboo_agent:
+#      remote: False
+#      capabilities:
+#        - name: golang
+#          source: repository
+#          capability_properties:
+#            - key: system.builder.command.go
+#              value: /usr/bin/go
+    bamboo_agent:
+      remote: True
+      capabilities:
+        - name: golang
+          source: repository
+          capability_properties:
+            - key: system.builder.command.go
+              value: /usr/bin/go
+  roles:
+#    - bamboo
+    - bamboo-agent

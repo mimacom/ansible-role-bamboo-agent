@@ -1,0 +1,7 @@
+# dont use known_hosts and never check new ssh hosts
+# this file has to be chmod 0600
+# see: http://linuxcommando.blogspot.ch/2008/10/how-to-disable-ssh-host-key-checking.html
+
+Host *
+  StrictHostKeyChecking no
+  UserKnownHostsFile=/dev/null

@@ -1,0 +1,76 @@
+---
+- name: "install openjdk-{{ openjdk_version }}"
+  yum:
+    name: "java-{{ openjdk_version }}-openjdk"
+    state: installed
+
+- name: Add local user
+  user:
+    name: "{{ bamboo_agent_user }}"
+
+- name: Create data folder for agent
+  file:
+    name: "{{ item }}"
+    state: directory
+    owner: "{{ bamboo_agent_user }}"
+    group: "{{ bamboo_agent_user }}"
+  with_items:
+    - "{{ bamboo_agent_data_folder }}"
+    - "{{ bamboo_agent_data_folder }}/conf"
+    - "{{ bamboo_agent_data_folder }}/bin"
+  register: data_folder
+
+- name: Set bamboo master URL for http
+  set_fact:
+    bamboo_master_url: "http://{{ bamboo_master.fqdn }}:{{ bamboo_master.port | default('8085') }}/"
+  when: bamboo_master.https == False
+
+- name: Set bamboo master URL for https
+  set_fact:
+    bamboo_master_url: "https://{{ bamboo_master.fqdn }}:{{ bamboo_master.port | default('443') }}/"
+  when: bamboo_master.https == True
+
+- name: Download bamboo agent binary
+  get_url:
+    url: "{{ bamboo_master_url }}/agentServer/agentInstaller/atlassian-bamboo-agent-installer-{{ bamboo_master.version }}.jar"
+    dest: "{{ bamboo_agent_application_folder }}"
+    timeout: 30
+  when: data_folder.changed
+  
+- name: Install bamboo agent
+  command: "java -Dbamboo.home={{ bamboo_agent_data_folder }} -jar {{ bamboo_agent_application_folder }}/atlassian-bamboo-agent-installer-{{ bamboo_master.version }}.jar {{ bamboo_master_url }}/agentServer/ install"
+  become: yes
+  become_user: "{{ bamboo_agent_user }}"
+  when: data_folder.changed
+
+- name: Remove bamboo agent installer
+  shell: "rm -rf {{ bamboo_agent_application_folder }}/atlassian-bamboo-agent-installer-*.jar"
+  changed_when: False
+
+- name: Install bambooagent systemd unit script
+  template:
+    src: bambooagent.service.j2
+    dest: /etc/systemd/system/bambooagent.service
+    mode: 0744
+  notify: restart bambooagent
+
+- name: enable bambooagent service
+  systemd:
+    name: bambooagent
+    enabled: yes 
+    daemon_reload: yes 
+
+- name: Configure to not automatically add JDK capabilities
+  lineinfile:
+    path: "{{ bamboo_agent_data_folder }}/conf/wrapper.conf"
+    line: wrapper.java.additional.3=-DDISABLE_AGENT_AUTO_CAPABILITY_DETECTION=true
+  ignore_errors: yes
+  notify: restart bambooagent
+
+- name: Add capabilities
+  template:
+    src: bamboo-capabilities.properties.j2
+    dest: "{{ bamboo_agent_data_folder }}/bin/bamboo-capabilities.properties"
+# do not restart as this will restart bamboo-agent while deployment is running.
+# we have to find a solution to restart bamboo-agents regularily at nights or so.
+#  notify: restart bambooagent

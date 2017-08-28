@@ -1,0 +1,4 @@
+---
+- include: remoteagent.yml
+  when: bamboo_agent.remote
+- include: agent.yml

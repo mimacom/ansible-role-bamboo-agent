@@ -1,0 +1,157 @@
+---
+- name: Override vars for local agent
+  set_fact:
+    bamboo_agent_user: "{{ bamboo_master_user }}"
+    bamboo_agent_application_folder: "{{ bamboo_master_application_folder }}"
+  when:
+    bamboo_agent.remote == False
+
+- name: Create .ssh folder
+  file:
+    name: "{{ bamboo_agent_application_folder }}/.ssh/"
+    mode: 0700
+    owner: "{{ bamboo_agent_user }}"
+    group: "{{ bamboo_agent_user }}"
+    state: directory
+
+- name: Add bambooagent SSH private key
+  template:
+    src: id_rsa.j2
+    dest: "{{ bamboo_agent_application_folder }}/.ssh/id_rsa"
+    mode: 0600
+    owner: "{{ bamboo_agent_user }}"
+    group: "{{ bamboo_agent_user }}"
+  when: devadmin_ssh_key is defined
+
+- name: Add ssh client config file
+  copy:
+    src: ssh_config
+    dest: "{{ bamboo_agent_application_folder }}/.ssh/config"
+    mode: 0600
+    owner: "{{ bamboo_agent_user }}"
+    group: "{{ bamboo_agent_user }}"
+
+- name: Add git config file
+  copy:
+    src: gitconfig
+    dest: "{{ bamboo_agent_application_folder }}/.gitconfig"
+    mode: 0600
+    owner: "{{ bamboo_agent_user }}"
+    group: "{{ bamboo_agent_user }}"
+
+- name: Add cronjob for emptying trash folder for local user
+  cron:
+    name: empty trash
+    user: "{{ bamboo_agent_user }}"
+    special_time: daily
+    state: present
+    job: /usr/bin/trash-empty 1
+    
+- name: Copy cleanup scripts
+  template:
+    src: bamboo_cleanup.sh.j2
+    dest: /root/bamboo_cleanup.sh
+    mode: 0755
+
+- name: Crontab entry for bamboo cleanup script
+  cron:
+    name: bamboo agent cleanup
+    special_time: daily
+    state: present
+    job: /root/bamboo_cleanup.sh
+    
+- name: create application folders
+  file:
+    name: "{{ item.extract_path }}"
+    state: directory
+  with_items:
+    "{{ bamboo_agent.capabilities }}"
+  when: item.extract_path is defined
+
+- name: install yum packages
+  yum:
+    name: "{{ item.name }}"
+    state: installed
+  with_items:
+    "{{ bamboo_agent.capabilities }}"
+  when: (item.source is defined and item.source == "repository")
+
+- name: download and extract local archives
+  unarchive:
+    src: "{{ item.name }}"
+    dest: "{{ item.extract_path}}"
+  with_items:
+    "{{ bamboo_agent.capabilities }}"
+  when: (item.source is defined and item.source == "unarchive")
+
+- name: download and extract remote archives
+  unarchive:
+    src: "{{ item.name }}"
+    dest: "{{ item.extract_path }}"
+    remote_src: True
+  with_items:
+    "{{ bamboo_agent.capabilities }}"
+  when: (item.source is defined and item.source == "unarchive-remote")
+
+- name: create symlinks for applications
+  file:
+    path: "{{ item.symlink_dest }}"
+    src: "{{ item.symlink_src }}"
+    state: link
+  with_items:
+    "{{ bamboo_agent.capabilities }}"
+  when: item.symlink_dest is defined and item.symlink_src is defined
+
+- name: Populate PATH environment variable
+  template:
+    src: bambooagent.sh.j2
+    dest: /etc/profile.d/bambooagent.sh
+
+- name: install npm packages
+  npm:
+    name: "{{ item.name }}"
+    global: yes
+    state: present
+  with_items:
+    "{{ bamboo_agent.capabilities }}"
+  when: (item.source is defined and item.source == "npm")
+
+- name: Create maven home folder
+  file:
+    name: "{{ bamboo_agent_application_folder }}/.m2"
+    state: directory
+    owner: "{{ bamboo_agent_user }}"
+    group: "{{ bamboo_agent_user }}"
+  when: bamboo_agent.maven_settings is defined
+
+- name: Define settings for maven
+  template:
+    src: settings.xml.j2
+    dest: "{{ bamboo_agent_application_folder}}/.m2/settings.xml"
+    owner: "{{ bamboo_agent_user }}"
+    group: "{{ bamboo_agent_user }}"
+  when: bamboo_agent.maven_settings is defined
+
+- name: Set npmrc
+  template:
+    src: npmrc.j2
+    dest: "{{ bamboo_agent_application_folder }}/.npmrc"
+    owner: "{{ bamboo_agent_user }}"
+    group: "{{ bamboo_agent_user }}"
+  when: bamboo_agent.npm_registry is defined
+
+- name: Add docker group
+  group:
+    name: docker
+    state: present
+
+- name: Ensure bamboo agent user is member of docker
+  command: "usermod -a -G docker {{ bamboo_agent_user }}"
+  changed_when: False
+
+- name: Configure ansible
+  copy:
+    src: ansible.cfg
+    dest: "~{{ bamboo_agent_user }}/.ansible.cfg"
+    owner: "{{ bamboo_agent_user }}"
+    group: "{{ bamboo_agent_user }}"

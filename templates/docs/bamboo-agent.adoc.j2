@@ -1,0 +1,104 @@
+= Bamboo Agent
+
+A Bamboo agent is a build node which is connected to the Bamboo master server. When Bamboo is upgraded, the Bamboo agent will upgrade itself automatically. You can only add as much nodes as your Bamboo license allows.
+
+== Build stack
+
+There are two build stacks available on the Bamboo agents:
+
+ * current stack
+ * legacy stack
+
+Current stack is installed on *all* Bamboo agents, while the legacy stack is installed only on one Bamboo agent. There are different versions of legacy stacks. A legacy stack is evovled, each time one or more capabilities from the current stack have been removed. The legacy stack will receive the current date as a version number and will be valid for *one year*. After this period, the legacy stack becomes stale and will be removed from the Bamboo agent.
+
+This transparency on operations side ...
+
+ . prevents from old development and build tools
+ . encourage development teams to use current build tools
+ . helps project managers to do planning
+
+
+=== Current stack
+
+|===
+|Key | Value
+
+{% for cap in bamboo_agent %}
+{% if cap.capability_properties is defined %}
+{% for property in cap.capability_properties %}
+|{{ property.key }}
+|{{ property.value }}
+{% endfor %}
+{% endif %}
+{% endfor %}
+
+|===
+
+=== Future stack
+
+This additional capabilities could be added in future:
+
+|===
+|Key | Value
+
+|system.builder.mvn3.mvn-3.5
+|/opt/maven/mvn-3.5.0
+
+|system.builder.node.node-6.10
+|/opt/nodejs/node-6.10.3/bin/node
+
+|===
+
+
+
+=== Legacy stack
+
+Legacy stack is not under IT automation control currently and running as a https://bamboo.mimacom.com/admin/agent/viewAgent.action?agentId=13533186[local agent]. The current legacy stack doesn't apply to the 1-year-rule and doesn't have an expiry date currently.
+
+=== no date set
+These are the capabilities of the legacy stack:
+
+|===
+|Key | Value
+
+|system.builder.ant.ant-1.8
+|/opt/ant/apache-ant-1.8.2
+
+|system.builder.ant.ant-1.9
+|/opt/ant/apache-ant-1.9.2
+
+|system.buildet.mvn2.mvn-2.2
+|/opt/maven/mvn-2.2
+
+|system.builder.mvn3.mvn-3.0
+|/opt/maven/mvn-3.0
+
+|system.builder.mvn3.mvn-3.1
+|/opt/maven/mvn-3.1
+
+|system.builder.node.node-4
+|/opt/nodejs/node-v4/bin/node
+
+|system.jdk.jdk-1.5
+|/opt/java/jdk1.5
+
+|system.jdk.jdk-1.6
+|/opt/java/jdk1.6
+
+|===
+
+
+=== Proposed legacy stack
+
+These capabilities could be announced as deprecated in near future:
+
+|===
+|Key | Value
+
+|system.jdk.jdk-1.7
+|/opt/java/jdk1.7
+
+|system.builder.mvn3.mvn-3.2
+|/opt/maven/mvn-3.2
+
+|===
