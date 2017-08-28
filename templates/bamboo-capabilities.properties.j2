@@ -1,14 +1,11 @@
-{% for capability in bamboo_agent %}
-
-{% if capability.capability_properties is defined %}
+{% if bamboo_agent is defined and bamboo_agent.capabilities is defined %}
+{% for capability in bamboo_agent.capabilities %}
+{% if capability.properties is defined %}
 # {{ capability.name }}
-
-{% for property in capability.capability_properties %}
-
+{% for property in capability.properties %}
 {{ property.key }} = {{ property.value }}
 
 {% endfor %}
-
 {% endif %}
-
 {% endfor %}
+{% endif %}

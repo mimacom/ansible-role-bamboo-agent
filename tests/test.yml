@@ -12,7 +12,7 @@
 #      capabilities:
 #        - name: golang
 #          source: repository
-#          capability_properties:
+#          properties:
 #            - key: system.builder.command.go
 #              value: /usr/bin/go
     bamboo_agent:
@@ -20,7 +20,7 @@
       capabilities:
         - name: golang
           source: repository
-          capability_properties:
+          properties:
             - key: system.builder.command.go
               value: /usr/bin/go
   roles:
