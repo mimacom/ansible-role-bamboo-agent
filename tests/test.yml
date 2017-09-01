@@ -7,22 +7,26 @@
       fqdn: bamboo.mimacom.com
       https: true
       port: 443
-#    bamboo_agent:
-#      remote: False
-#      capabilities:
-#        - name: golang
-#          source: repository
-#          properties:
-#            - key: system.builder.command.go
-#              value: /usr/bin/go
     bamboo_agent:
-      remote: True
+      remote: False
+      npmrc: |
+        lala
+        lulu
+        test test
       capabilities:
         - name: golang
           source: repository
           properties:
             - key: system.builder.command.go
               value: /usr/bin/go
+#    bamboo_agent:
+#      remote: True
+#      capabilities:
+#        - name: golang
+#          source: repository
+#          properties:
+#            - key: system.builder.command.go
+#              value: /usr/bin/go
   roles:
-#    - bamboo
-    - bamboo-agent
+    - mimacom.bamboo
+    - mimacom.bamboo-agent

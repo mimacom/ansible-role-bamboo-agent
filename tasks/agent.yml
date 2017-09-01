@@ -2,13 +2,12 @@
 - name: Override vars for local agent
   set_fact:
     bamboo_agent_user: "{{ bamboo_master_user }}"
-    bamboo_agent_application_folder: "{{ bamboo_master_application_folder }}"
   when:
     bamboo_agent.remote == False
 
 - name: Create .ssh folder
   file:
-    name: "{{ bamboo_agent_application_folder }}/.ssh/"
+    name: "~{{ bamboo_agent_user }}/.ssh/"
     mode: 0700
     owner: "{{ bamboo_agent_user }}"
     group: "{{ bamboo_agent_user }}"
@@ -17,7 +16,7 @@
 - name: Add bambooagent SSH private key
   template:
     src: id_rsa.j2
-    dest: "{{ bamboo_agent_application_folder }}/.ssh/id_rsa"
+    dest: "~{{ bamboo_agent_user }}/.ssh/id_rsa"
     mode: 0600
     owner: "{{ bamboo_agent_user }}"
     group: "{{ bamboo_agent_user }}"
@@ -26,7 +25,7 @@
 - name: Add ssh client config file
   copy:
     src: ssh_config
-    dest: "{{ bamboo_agent_application_folder }}/.ssh/config"
+    dest: "~{{ bamboo_agent_user }}/.ssh/config"
     mode: 0600
     owner: "{{ bamboo_agent_user }}"
     group: "{{ bamboo_agent_user }}"
@@ -34,18 +33,10 @@
 - name: Add git config file
   copy:
     src: gitconfig
-    dest: "{{ bamboo_agent_application_folder }}/.gitconfig"
+    dest: "~{{ bamboo_agent_user }}/.gitconfig"
     mode: 0600
     owner: "{{ bamboo_agent_user }}"
     group: "{{ bamboo_agent_user }}"
-
-- name: Add cronjob for emptying trash folder for local user
-  cron:
-    name: empty trash
-    user: "{{ bamboo_agent_user }}"
-    special_time: daily
-    state: present
-    job: /usr/bin/trash-empty 1
     
 - name: Copy cleanup scripts
   template:
@@ -118,7 +109,7 @@
 
 - name: Create maven home folder
   file:
-    name: "{{ bamboo_agent_application_folder }}/.m2"
+    name: "~{{ bamboo_agent_user }}/.m2"
     state: directory
     owner: "{{ bamboo_agent_user }}"
     group: "{{ bamboo_agent_user }}"
@@ -127,7 +118,7 @@
 - name: Define settings for maven
   template:
     src: settings.xml.j2
-    dest: "{{ bamboo_agent_application_folder}}/.m2/settings.xml"
+    dest: "~{{ bamboo_agent_user }}/.m2/settings.xml"
     owner: "{{ bamboo_agent_user }}"
     group: "{{ bamboo_agent_user }}"
   when: bamboo_agent.maven_settings is defined
@@ -135,10 +126,10 @@
 - name: Set npmrc
   template:
     src: npmrc.j2
-    dest: "{{ bamboo_agent_application_folder }}/.npmrc"
+    dest: "~{{ bamboo_agent_user }}/.npmrc"
     owner: "{{ bamboo_agent_user }}"
     group: "{{ bamboo_agent_user }}"
-  when: bamboo_agent.npm_registry is defined
+  when: bamboo_agent.npmrc is defined
 
 - name: Add docker group
   group:
