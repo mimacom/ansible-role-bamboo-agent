@@ -30,7 +30,7 @@
 			</properties>
       {% endif %}
 
-      {% if profile profile.repositories %}
+      {% if profile.repositories is defined %}
 			<repositories>
         {% for repository in profile.repositories %}
 				<repository>
