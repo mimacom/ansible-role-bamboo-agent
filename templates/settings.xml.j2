@@ -30,6 +30,7 @@
 			</properties>
       {% endif %}
 
+      {% if profile profile.repositories %}
 			<repositories>
         {% for repository in profile.repositories %}
 				<repository>
@@ -40,7 +41,9 @@
 				</repository>
         {% endfor %}
 			</repositories>
+      {% endif %}
 
+      {% if profile.plugin_repositories is defined %}
 			<pluginRepositories>
         {% for plugin_repository in profile.plugin_repositories %}
 				<pluginRepository>
@@ -51,6 +54,7 @@
 				</pluginRepository>
         {% endfor %}
 			</pluginRepositories>
+      {% endif %}
 
 		</profile>
   {% endfor %}
