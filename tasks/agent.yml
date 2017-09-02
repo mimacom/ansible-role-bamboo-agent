@@ -71,6 +71,7 @@
   unarchive:
     src: "{{ item.name }}"
     dest: "{{ item.extract_path}}"
+    keep_newer: yes
   with_items:
     "{{ bamboo_agent.capabilities }}"
   when: (item.source is defined and item.source == "unarchive")
@@ -79,6 +80,7 @@
   unarchive:
     src: "{{ item.name }}"
     dest: "{{ item.extract_path }}"
+    keep_newer: yes
     remote_src: True
   with_items:
     "{{ bamboo_agent.capabilities }}"
