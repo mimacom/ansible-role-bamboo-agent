@@ -146,3 +146,20 @@
     dest: "~{{ bamboo_agent_user }}/.ansible.cfg"
     owner: "{{ bamboo_agent_user }}"
     group: "{{ bamboo_agent_user }}"
+
+- name: Store root CA locally
+  blockinfile:
+    path: /opt/rootca.crt
+    block: "{{ root_ca }}"
+    create: yes
+  when: root_ca is defined
+
+- name: Add root CA to java keystores
+  java_cert:
+    cert_alias: custom-root-ca
+    cert_path: /opt/rootca.crt
+    keystore_pass: changeit
+    keystore_path: "{{ item.extract_path }}/{{ item.cacert_path }}"
+  changed_when: false
+  when: item.cacert_path is defined and root_ca is defined
+  with_items: "{{ bamboo_agent.capabilities }}"
