@@ -17,7 +17,7 @@ These role variables are mandatory:
 openjdk_version: # OpenJDK is only used for running bamboo itself, not for building projects hosted on bamboo. Make sure that this matches' the bamboo agent version's supported platforms.
 
 bamboo_master: # Information about connecting to a bamboo master
-							 # (only when bamboo_agent.remote=true)
+               # (only when bamboo_agent.remote=true)
   version: # Version number of bamboo agent
   fqdn: # Under which domain is the master available?
   https: # true/false: Does the master listen on https or http?
