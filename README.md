@@ -16,6 +16,13 @@ These role variables are mandatory:
 ```yaml
 openjdk_version: # OpenJDK is only used for running bamboo itself, not for building projects hosted on bamboo. Make sure that this matches' the bamboo agent version's supported platforms.
 
+bamboo_master: # Information about connecting to a bamboo master
+							 # (only when bamboo_agent.remote=true)
+  version: # Version number of bamboo agent
+  fqdn: # Under which domain is the master available?
+  https: # true/false: Does the master listen on https or http?
+  port: # Under which port is the master available?
+
 bamboo_agent: # Custom setings for the bamboo agent
   remote: # true/false. Installs remote agent binary when true
   npmrc: # Configure .npmrc file at bamboo agents home
@@ -34,19 +41,6 @@ bamboo_agent: # Custom setings for the bamboo agent
       properties: # List of properties which are set on (remote!) agents.
         - key: # Key of bamboo agent property
           value: # Value of bamboo agent property
-```
-
-Fill the variable "bamboo_agent" with your capabilities. A capability is defined in bamboo itself for each remote bamboo agent. It defines what the agent is able to build, ie. what build tools are installed on it. Like maven, g++, Oracle JDK and so on. Use these variables for each entry/capability:
-
-```yaml
-name: # Name of a yum package, a role's file or an URL to an RPM or TAR.GZ package which should be installed
-type: # Capability type as it is called in bamboo itself. Only for your purpose, not used in the role itself.
-source: This is either 'unarchive' for a role file's archive, 'unarchive-remote' for an archive which should be downloaded from the internet, and 'repository' if it should be installed by yum.
-binary_path: Optional. If defined, this will be added to every Linux's users PATH environment variable
-extract_path: Optional. The archive will be extracted in here after downloading.
-symlink_src: Optional. If you want your software softlinked to a specific path, use this and 'symlink_dest'
-symlink_dest: See symlink_src
-note: Notes about this capability. Only for your purpose, not used in the role itself.
 ```
 
 Other notes for npm dependencies
@@ -92,5 +86,5 @@ Example:
 Dependencies
 ------------
 
-The following mimacom roles should be applied in this order:
-* common
+Normally none. But if you use this role for a local bamboo agent, it is
+highly recommended to use "mimacom.bamboo" role.
