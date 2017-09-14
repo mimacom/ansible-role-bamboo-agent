@@ -88,12 +88,12 @@
 
 - name: create symlinks for applications
   file:
-    path: "{{ item.symlink_dest }}"
-    src: "{{ item.symlink_src }}"
+    src: "{{ item.1.src }}"
+    path: "{{ item.1.dest }}"
     state: link
-  with_items:
-    "{{ bamboo_agent.capabilities }}"
-  when: item.symlink_dest is defined and item.symlink_src is defined
+  with_subelements:
+    - "{{ bamboo_agent.capabilities }}"
+    - symlinks
 
 - name: Populate PATH environment variable
   template:
