@@ -5,6 +5,8 @@
     bamboo_master:
       version: 6.2.1
       fqdn: localhost
+      http: false
+      port: 8085
     bamboo_agent:
       remote: True
       npmrc: |
