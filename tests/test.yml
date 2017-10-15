@@ -3,30 +3,18 @@
   become: true
   vars:
     bamboo_master:
-      version: 6.1.1
-      fqdn: bamboo.mimacom.com
-      https: true
-      port: 443
+      version: 6.2.1
+      fqdn: localhost
     bamboo_agent:
-      remote: False
+      remote: True
       npmrc: |
-        lala
-        lulu
-        test test
+        npm-config
       capabilities:
         - name: golang
           source: repository
           properties:
             - key: system.builder.command.go
               value: /usr/bin/go
-#    bamboo_agent:
-#      remote: True
-#      capabilities:
-#        - name: golang
-#          source: repository
-#          properties:
-#            - key: system.builder.command.go
-#              value: /usr/bin/go
   roles:
     - mimacom.bamboo
-    - mimacom.bamboo-agent
+    - role_under_test
