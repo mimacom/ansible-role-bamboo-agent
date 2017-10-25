@@ -7,6 +7,7 @@
 - name: Add local user
   user:
     name: "{{ bamboo_agent_user }}"
+    uid: "{{ bamboo_agent_uid }}"
 
 - name: Create data folder for agent
   file:
