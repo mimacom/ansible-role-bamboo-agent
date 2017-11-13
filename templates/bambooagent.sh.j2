@@ -1,4 +1,4 @@
-{% if bamboo_agent is defined %}
+{% if bamboo_agent is defined and bamboo_agent.capabilities is defined %}
 {% for item in bamboo_agent.capabilities %}
 {% if item.binary_path is defined %}
 pathmunge {{ item.binary_path }}
