@@ -65,8 +65,9 @@
 - name: enable bambooagent service
   systemd:
     name: bambooagent
-    enabled: yes 
-    daemon_reload: yes 
+    enabled: yes
+    daemon_reload: yes
+    state: started
 
 - name: Configure to not automatically add JDK capabilities
   lineinfile:
