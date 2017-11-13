@@ -1,5 +1,6 @@
 ---
 install_jdk: true
+use_proxy: false
 openjdk_version: 1.8.0
 bamboo_agent_user: bambooagent
 bamboo_agent_uid: 5000

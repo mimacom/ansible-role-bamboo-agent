@@ -5,6 +5,13 @@ After=syslog.target network.target
 [Service]
 Environment=PATH=/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/bin:/bin{% if bamboo_agent is defined and bamboo_agent.capabilities is defined %}{% for item in bamboo_agent.capabilities %}{% if item.binary_path is defined %}:{{ item.binary_path }}{% endif %}{% endfor %}{% endif %}
 
+{%if bamboo_agent.use_proxy is defined %}
+Environment=JAVA_OPTS=-Dhttp.nonProxyHosts={% for item in bamboo_agent.no_proxy %}{{ item }}\|{% endfor %} -Dhttp.proxyHost={{ bamboo_agent.http_proxy_host }} -Dhttp.proxyPort={{ bamboo_agent.http_proxy_port }} -Dhttps.proxyHost={{ bamboo_agent.https_proxy_host }} -Dhttps.proxyPort={{ bamboo_agent.https_proxy_port }} -Dhttp.proxyUser={{ bamboo_agent.proxy_user }} -Dhttp.proxyPassword={{ bamboo_agent.proxy_password }}
+Environment=http_proxy=http://{{ proxy_user}}:{{ proxy_password }}@{{ proxy_host }}:{{ proxy_port }}
+Environment=https_proxy=http://{{ proxy_user}}:{{ proxy_password }}@{{ proxy_host }}:{{ proxy_port }}
+Environment=no_proxy={% for item in bamboo_agent.no_proxy %}{{ item }},{% endfor %}
+{% endif %}
+
 Type=forking
 User=bambooagent
 Group=bambooagent
