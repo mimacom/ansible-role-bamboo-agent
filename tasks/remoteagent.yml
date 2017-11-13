@@ -1,8 +1,15 @@
 ---
-- name: "install openjdk-{{ openjdk_version }}"
+- name: "install openjdk-{{ openjdk_version }} (yum)"
   yum:
     name: "java-{{ openjdk_version }}-openjdk"
     state: installed
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+
+- name: "install openjdk-{{ openjdk_version }} (apt)"
+  apt:
+    name: "openjdk-{{ openjdk_version }}-jdk"
+    state: installed
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
 
 - name: Add local user
   user:
