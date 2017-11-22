@@ -4,15 +4,14 @@ services: docker
 env:
   - distro: centos7
     remote: true
-  - distro: ubuntu1604
-    remote: true
-#  - distro: ubuntu1404
-#    remote: true
 #  - distro: centos7
 #    remote: false
-#  - distro: centos6
-#  - distro: fedora24
-#  - distro: debian8
+  - distro: ubuntu1604
+    remote: true
+  - distro: ubuntu1404
+    remote: true
+  - distro: debian8
+    remote: true
 
 script:
   # Configure test script so we can run extra tests after playbook is run.
