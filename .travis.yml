@@ -4,13 +4,14 @@ services: docker
 env:
   - distro: centos7
     remote: true
+  - distro: ubuntu1604
+    remote: true
+#  - distro: ubuntu1404
+#    remote: true
 #  - distro: centos7
 #    remote: false
 #  - distro: centos6
 #  - distro: fedora24
-#  - distro: ubuntu1604
-#  - distro: ubuntu1404
-#  - distro: ubuntu1204
 #  - distro: debian8
 
 script:
@@ -19,7 +20,7 @@ script:
   - export cleanup=false
 
   # Download test shim.
-  - wget -O ${PWD}/tests/test.sh https://gist.githubusercontent.com/geerlingguy/73ef1e5ee45d8694570f334be385e181/raw/
+  #- wget -O ${PWD}/tests/test.sh https://gist.githubusercontent.com/geerlingguy/73ef1e5ee45d8694570f334be385e181/raw/
   - chmod +x ${PWD}/tests/test.sh
 
   # Run tests.
