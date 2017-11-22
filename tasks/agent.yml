@@ -37,7 +37,7 @@
     mode: 0600
     owner: "{{ bamboo_agent_user }}"
     group: "{{ bamboo_agent_user }}"
-    
+
 - name: Copy cleanup scripts
   template:
     src: bamboo_cleanup.sh.j2
@@ -50,7 +50,7 @@
     special_time: daily
     state: present
     job: /root/bamboo_cleanup.sh
-    
+
 - name: create application folders
   file:
     name: "{{ item.extract_path }}"
@@ -59,8 +59,8 @@
     "{{ bamboo_agent.capabilities }}"
   when: item.extract_path is defined
 
-- name: install yum packages
-  yum:
+- name: install packages
+  package:
     name: "{{ item.name }}"
     state: installed
   with_items:
