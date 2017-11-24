@@ -11,8 +11,7 @@ You already must have an Atlassian Bamboo server, since Bamboo agents depend on
 it. Before using this role, make sure you have enough licenses remote Bamboo
 agents (if wanted) otherwise they won't show up in Bamboo.
 
-
-## Role Variables
+## Role Variables
 
 Available variables are listed below, along with default values (see
 `defaults/main.yml`):
