@@ -1,5 +1,5 @@
-{% if bamboo_agent is defined and bamboo_agent.capabilities is defined %}
-{% for capability in bamboo_agent.capabilities %}
+{% if bamboo_agent_capabilities is defined %}
+{% for capability in bamboo_agent_capabilities %}
 {% if capability.properties is defined %}
 # {{ capability.name }}
 {% for property in capability.properties %}

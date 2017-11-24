@@ -1,0 +1,27 @@
+- debug:
+    msg: "Usage of dict 'bamboo_master' is deprecated. Please consult README"
+
+- name: Set bamboo_master_user
+  set_fact:
+    bamboo_master_user: "{{ bamboo_master.user }}"
+  when: bamboo_master.user is defined
+
+- name: Set bamboo_master_version
+  set_fact:
+    bamboo_master_version: "{{ bamboo_master.version }}"
+  when: bamboo_master.version is defined
+
+- name: Set bamboo_master_fqdn
+  set_fact:
+    bamboo_master_fqdn: "{{ bamboo_master.fqdn }}"
+  when: bamboo_master.fqdn is defined
+
+- name: Set bamboo_master_https
+  set_fact:
+    bamboo_master_https: "{{ bamboo_master.https }}"
+  when: bamboo_master.https is defined
+
+- name: Set bamboo_master_port
+  set_fact:
+    bamboo_master_port: "{{ bamboo_master.port }}"
+  when: bamboo_master.port is defined

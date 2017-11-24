@@ -1,0 +1,23 @@
+- debug:
+    msg: "Usage of dict 'bamboo_agent' is deprecated. Please consult README"
+
+- name: Set bamboo_agent_remote
+  set_fact:
+    bamboo_agent_remote: "{{ bamboo_agent.remote }}"
+  when: bamboo_agent.remote is defined
+
+- name: Set bamboo_agent_npmrc
+  set_fact:
+    bamboo_agent_npmrc: "{{ bamboo_agent.npmrc }}"
+  when: bamboo_agent.npmrc is defined
+
+- name: Set bamboo_agent_maven_settings
+  set_fact:
+    bamboo_agent_maven_settings: "{{ bamboo_agent.maven_settings }}"
+  when: bamboo_agent.maven_settings is defined
+
+- name: Set bamboo_agent_capabilities
+  set_fact:
+    bamboo_agent_capabilities: "{{ bamboo_agent.capabilities }}"
+  when: bamboo_agent.capabilities is defined
+

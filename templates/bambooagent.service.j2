@@ -3,7 +3,7 @@ Description=bambooagent
 After=syslog.target network.target
 
 [Service]
-Environment=PATH=/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/bin:/bin{% if bamboo_agent is defined and bamboo_agent.capabilities is defined %}{% for item in bamboo_agent.capabilities %}{% if item.binary_path is defined %}:{{ item.binary_path }}{% endif %}{% endfor %}{% endif %}
+Environment=PATH=/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/bin:/bin{% if bamboo_agent_capabilities is defined %}{% for item in bamboo_agent_capabilities %}{% if item.binary_path is defined %}:{{ item.binary_path }}{% endif %}{% endfor %}{% endif %}
 
 Type=forking
 User=bambooagent

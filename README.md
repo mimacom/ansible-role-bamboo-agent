@@ -1,50 +1,83 @@
-bamboo-agent
-============
+# Ansible Role: bamboo-agent
 
-This role will install a bamboo agent (node) for a specific bamboo master server.
+[![Build Status](https://img.shields.io/travis/mimacom/ansible-role-bamboo-agent.svg)](https://travis-ci.org/mimacom/ansible-role-bamboo-agent)
 
-Requirements
-------------
+Installs a local or remote Bamboo agent (node) for a specific Atlassian Bamboo
+master server.
 
-You already must have a bamboo server, since bamboo agents depends on it.
-Before you use this role, make sure you have enough licenses for bamboo agents, otherwise they won't show up in bamboo.
+## Requirements
 
-Role Variables
---------------
+You already must have an Atlassian Bamboo server, since Bamboo agents depend on
+it. Before using this role, make sure you have enough licenses remote Bamboo
+agents (if wanted) otherwise they won't show up in Bamboo.
 
-These role variables are mandatory:
-```yaml
-openjdk_version: # OpenJDK is only used for running bamboo itself, not for building projects hosted on bamboo. Make sure that this matches' the bamboo agent version's supported platforms.
+## Role Variables
 
-bamboo_master: # Information about connecting to a bamboo master
-               # (only when bamboo_agent.remote=true)
-  version: # Version number of bamboo agent
-  fqdn: # Under which domain is the master available?
-  https: # true/false: Does the master listen on https or http?
-  port: # Under which port is the master available?
+Available variables are listed below, along with default values (see
+`defaults/main.yml`):
 
-bamboo_agent: # Custom setings for the bamboo agent
-  remote: # true/false. Installs remote agent binary when true
-  npmrc: # Configure .npmrc file at bamboo agents home
-  maven_settings: # Configures .m2/settings.xml file at bamboo agents home
+    openjdk_version: 1.8.0
 
-  capabilities: # A list of capabilities whose are installed additionally
-    - name: # Name of the package to install
-      source: # repository/unarchive-remote/npm. Defines where to grab binaries to install
-              # repository means Linux package manager, like yum or apt
-      symlinks: # List of symlinks to create for this binary. Set it to
-                # [] if you don't use it!
-        - src: # Source path of symlink
-          dest: # Destination path of symlink
-      binary_path: # Add this binary to $PATH variable for all users
-      extract_path: # Extract to this folder (only when source=unarchive-remote)
-      properties: # List of properties which are set on (remote!) agents.
-        - key: # Key of bamboo agent property
-          value: # Value of bamboo agent property
-```
+The version of openJDK to install (remote agent only).
 
-Other notes for npm dependencies
------------
+    bamboo_agent_remote: false
+
+Whether this is a remote agent or not.
+
+    bamboo_master_version: ""
+    bamboo_master_fqdn: ""
+    bamboo_master_https: false
+    bamboo_master_port: ""
+
+Bamboo master connection (remote agent only)
+
+    bamboo_master_user: bamboo
+
+Service user for Bamboo master node (local agent only)
+
+    bamboo_agent_user: bambooagent
+    bamboo_agent_uid: 5000
+
+Service user name and ID for systemd (remote agent only).
+
+    bamboo_agent_application_folder: "/home/{{ bamboo_agent_user }}"
+    bamboo_agent_data_folder: "/home/{{ bamboo_agent_user }}/bamboo-agent-home"
+
+Path where to store application binaries and application data (remote agent
+only).
+
+    bamboo_agent_jvm_memory: 768m
+
+Java heap space for remote bamboo agent (remote agent only).
+
+    bamboo_agent_npmrc: ""
+    bambo_agent_maven_settings: ""
+
+Contents of the service user's setting files for npm and maven.
+
+    bamboo_agent_capabilities: []
+
+A list of Bamboo capabilities. For remote agents, the capabilities will be added
+as actual capabilities in the Bamboo remote agent, when `properties` is set.
+Unfortunately this is not possible for local agents.
+
+If you specify the `source` with a proper `name`, an according package is
+installed. You must install the used package manager by yourself!
+
+A capability has the values:
+
+  - `name`
+  - `source` (One of `repository` (means yum/apt/...), `unarchive-remote`, `npm`)
+  - `symlinks` (List of symlinks to create for this binary. Set it to `[]` if
+    you don't use it!  Subkeys are `src` and `dest`)
+  - `binary_path` (Value will be added to $PATH for all users and Bamboo agent
+    service user)
+  - `extract_path` (Path where to extract, when `source: unarchive-remote`)
+  - `properties` (List of properties which are set on remote agents. Subkeys are
+    `key` and `value`)
+
+## Other notes for npm dependencies
+
 If you configure to install npm, you must make sure to install node by
 yourself. Please note: If you install node to a non-default PATH, make
 sure to define the "symlinks" sub-variable and point the destination of
@@ -53,38 +86,65 @@ npm and node to a default-path like /usr/bin/.
 Simply setting "binary_path", which would add the path to $PATH variable
 doesn't work since ansible npm_module ignores it!
 
+## Deprecation warning
 
-Example:
+  - dicts `bamboo_master` and `bamboo_agent` are deprecated and will be removed
+    in future releases. Please consult README.
+  - `bamboo_agent_capabilities` will not install packages anymore in the future.
+    It will be used only for setting capability variables for remote agents, and
+    set binary paths.
+    Please use `pre_tasks` or `post_tasks` in your playbook, to install using
+    your own tasks.
 
-```
-- hosts: bamboo-agents
-  vars:
-    bamboo_agent:
-      capabilities:
-        - name: https://nodejs.org/dist/v7.7.4/node-v7.7.4-linux-x64.tar.gz
-          source: unarchive-remote
-          binary_path: /opt/nodejs/node-v7/bin/
-          extract_path: /opt/nodejs/
-          symlinks:
-            - src: /opt/nodejs/node-v7.7.4-linux-x64
-              dest: /opt/nodejs/node-v7
-
-            - src: /opt/nodejs/node-v7.7.4-linux-x64/bin/npm
-              dest: /usr/bin/npm
-
-            - src: /opt/nodejs/node-v7.7.4-linux-x64/bin/node
-              dest: /usr/bin/node
-
-      - name: "@angular/cli"
-        source: npm
-        symlinks: []
-        properties:
-          - key: path.has.ng
-            value: "true"
-```
-
-Dependencies
-------------
+## Dependencies
 
 Normally none. But if you use this role for a local bamboo agent, it is
-highly recommended to use "mimacom.bamboo" role.
+recommended to use "mimacom.bamboo" role.
+
+## Example playbook
+
+This installs a Bamboo remote agent. The binary will be fetched from the Bamboo
+master node (according to `bamboo_master_*` variables). The jar will be setup as
+a systemd service.
+
+Nodejs as a capability will be downloaded, extracted,
+symlinked and the binary path will be added to the systemd service in order for
+the agent to find nodejs.
+
+Angular CLI as a second capability will be installed using npm. No symlinks are
+created, and a custom capability will be set on the remote agent according to its
+`properties`.
+
+    - hosts: build-agents
+      become: yes
+      roles:
+        - role: mimacom.bamboo-agent
+          bamboo_agent_remote: true
+          bamboo_master_version: 6.2.2
+          bamboo_master_fqdn: "https://bamboo.company.example/
+          bamboo_master_https: true
+          bamboo_master_port: 443
+          bamboo_agent_capabilities:
+            - name: https://nodejs.org/dist/v7.7.4/node-v7.7.4-linux-x64.tar.gz
+              source: unarchive-remote
+              binary_path: /opt/nodejs/node-v7/bin/
+              extract_path: /opt/nodejs/
+              symlinks:
+                - src: /opt/nodejs/node-v7.7.4-linux-x64
+                  dest: /opt/nodejs/node-v7
+
+                - src: /opt/nodejs/node-v7.7.4-linux-x64/bin/npm
+                  dest: /usr/bin/npm
+
+                - src: /opt/nodejs/node-v7.7.4-linux-x64/bin/node
+                  dest: /usr/bin/node
+              properties:
+                - key: system.builder.node.node-7
+                  value: /opt/nodejs/node-v7/bin/node
+
+            - name: "@angular/cli"
+              source: npm
+              symlinks: []
+              properties:
+                - key: path.has.ng
+                  value: "true"

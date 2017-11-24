@@ -3,7 +3,7 @@
   set_fact:
     bamboo_agent_user: "{{ bamboo_master_user }}"
   when:
-    bamboo_agent.remote == False
+    bamboo_agent_remote == False
 
 - name: Create .ssh folder
   file:
@@ -56,7 +56,7 @@
     name: "{{ item.extract_path }}"
     state: directory
   with_items:
-    "{{ bamboo_agent.capabilities }}"
+    "{{ bamboo_agent_capabilities }}"
   when: item.extract_path is defined
 
 - name: install packages
@@ -64,7 +64,7 @@
     name: "{{ item.name }}"
     state: installed
   with_items:
-    "{{ bamboo_agent.capabilities }}"
+    "{{ bamboo_agent_capabilities }}"
   when: (item.source is defined and item.source == "repository")
 
 - name: download and extract local archives
@@ -73,7 +73,7 @@
     dest: "{{ item.extract_path}}"
     keep_newer: yes
   with_items:
-    "{{ bamboo_agent.capabilities }}"
+    "{{ bamboo_agent_capabilities }}"
   when: (item.source is defined and item.source == "unarchive")
 
 - name: download and extract remote archives
@@ -83,7 +83,7 @@
     keep_newer: yes
     remote_src: True
   with_items:
-    "{{ bamboo_agent.capabilities }}"
+    "{{ bamboo_agent_capabilities }}"
   when: (item.source is defined and item.source == "unarchive-remote")
 
 - name: create symlinks for applications
@@ -92,7 +92,7 @@
     path: "{{ item.1.dest }}"
     state: link
   with_subelements:
-    - "{{ bamboo_agent.capabilities }}"
+    - "{{ bamboo_agent_capabilities }}"
     - symlinks
 
 - name: Populate PATH environment variable
@@ -106,7 +106,7 @@
     global: yes
     state: present
   with_items:
-    "{{ bamboo_agent.capabilities }}"
+    "{{ bamboo_agent_capabilities }}"
   when: (item.source is defined and item.source == "npm")
 
 - name: Create maven home folder
@@ -115,7 +115,7 @@
     state: directory
     owner: "{{ bamboo_agent_user }}"
     group: "{{ bamboo_agent_user }}"
-  when: bamboo_agent.maven_settings is defined
+  when: bamboo_agent_maven_settings is defined
 
 - name: Define settings for maven
   template:
@@ -123,7 +123,7 @@
     dest: "~{{ bamboo_agent_user }}/.m2/settings.xml"
     owner: "{{ bamboo_agent_user }}"
     group: "{{ bamboo_agent_user }}"
-  when: bamboo_agent.maven_settings is defined
+  when: bamboo_agent_maven_settings is defined
 
 - name: Set npmrc
   template:
@@ -131,7 +131,7 @@
     dest: "~{{ bamboo_agent_user }}/.npmrc"
     owner: "{{ bamboo_agent_user }}"
     group: "{{ bamboo_agent_user }}"
-  when: bamboo_agent.npmrc is defined
+  when: bamboo_agent_npmrc is defined
 
 - name: Add docker group
   group:
@@ -164,4 +164,4 @@
     keystore_path: "{{ item.extract_path }}/{{ item.cacert_path }}"
   changed_when: false
   when: item.cacert_path is defined and root_ca is defined
-  with_items: "{{ bamboo_agent.capabilities }}"
+  with_items: "{{ bamboo_agent_capabilities }}"

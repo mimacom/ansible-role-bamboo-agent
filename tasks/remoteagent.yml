@@ -30,23 +30,23 @@
 
 - name: Set bamboo master URL for http
   set_fact:
-    bamboo_master_url: "http://{{ bamboo_master.fqdn }}:{{ bamboo_master.port | default('8085') }}/"
-  when: bamboo_master.https == False
+    bamboo_master_url: "http://{{ bamboo_master_fqdn }}:{{ bamboo_master_port | default('8085') }}/"
+  when: bamboo_master_https == False
 
 - name: Set bamboo master URL for https
   set_fact:
-    bamboo_master_url: "https://{{ bamboo_master.fqdn }}:{{ bamboo_master.port | default('443') }}/"
-  when: bamboo_master.https == True
+    bamboo_master_url: "https://{{ bamboo_master_fqdn }}:{{ bamboo_master_port | default('443') }}/"
+  when: bamboo_master_https == True
 
 - name: Download bamboo agent binary
   get_url:
-    url: "{{ bamboo_master_url }}/agentServer/agentInstaller/atlassian-bamboo-agent-installer-{{ bamboo_master.version }}.jar"
+    url: "{{ bamboo_master_url }}/agentServer/agentInstaller/atlassian-bamboo-agent-installer-{{ bamboo_master_version }}.jar"
     dest: "{{ bamboo_agent_application_folder }}"
     timeout: 30
   when: data_folder.changed
   
 - name: Install bamboo agent
-  command: "java -Dbamboo.home={{ bamboo_agent_data_folder }} -jar {{ bamboo_agent_application_folder }}/atlassian-bamboo-agent-installer-{{ bamboo_master.version }}.jar {{ bamboo_master_url }}/agentServer/ install"
+  command: "java -Dbamboo.home={{ bamboo_agent_data_folder }} -jar {{ bamboo_agent_application_folder }}/atlassian-bamboo-agent-installer-{{ bamboo_master_version }}.jar {{ bamboo_master_url }}/agentServer/ install"
   become: yes
   become_user: "{{ bamboo_agent_user }}"
   when: data_folder.changed

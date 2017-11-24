@@ -1,5 +1,11 @@
 ---
+- include: deprecated_bamboo_master.yml
+  when: bamboo_master is defined
+
+- include: deprecated_bamboo_agent.yml
+  when: bamboo_agent is defined
+
 - include: remoteagent.yml
-  when: bamboo_agent.remote
+  when: bamboo_agent_remote
 
 - include: agent.yml
