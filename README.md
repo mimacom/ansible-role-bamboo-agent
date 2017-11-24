@@ -11,6 +11,7 @@ You already must have an Atlassian Bamboo server, since Bamboo agents depend on
 it. Before using this role, make sure you have enough licenses remote Bamboo
 agents (if wanted) otherwise they won't show up in Bamboo.
 
+
 ## Role Variables
 
 Available variables are listed below, along with default values (see
@@ -99,7 +100,7 @@ doesn't work since ansible npm_module ignores it!
 ## Dependencies
 
 Normally none. But if you use this role for a local bamboo agent, it is
-recommended to use "mimacom.bamboo" role.
+recommended to use `mimacom.bamboo` role.
 
 ## Example playbook
 
