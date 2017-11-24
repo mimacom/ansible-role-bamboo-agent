@@ -148,3 +148,18 @@ created, and a custom capability will be set on the remote agent according to it
               properties:
                 - key: path.has.ng
                   value: "true"
+
+## Upgrade Bamboo remote agent
+
+Bamboo remote agents will not be upgraded when you change the
+`bamboo_master_variable` variable. Each remote agent will update itself once it
+has detected, that the master has a new version. So, simply worry about
+upgrading the Bamboo master :-)
+
+## License
+
+Apache License 2.0
+
+## Author Information
+
+This role was created by [Remo Wenger](http://www.remowenger.ch).
