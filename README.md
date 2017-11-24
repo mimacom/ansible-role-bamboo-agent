@@ -51,7 +51,7 @@ only).
 Java heap space for remote bamboo agent (remote agent only).
 
     bamboo_agent_npmrc: ""
-    bambo_agent_maven_settings: ""
+    bamboo_agent_maven_settings: ""
 
 Contents of the service user's setting files for npm and maven.
 
