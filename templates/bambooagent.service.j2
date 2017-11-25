@@ -7,11 +7,13 @@ Environment=PATH=/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/bin:/bi
 
 Environment=JAVA_TOOL_OPTIONS=-Dfile.encoding=UTF-8
 
-{%if bamboo_agent.use_proxy is defined %}
-Environment=JAVA_OPTS=-Dhttp.nonProxyHosts={% for item in bamboo_agent.no_proxy %}{{ item }}\|{% endfor %} -Dhttp.proxyHost={{ bamboo_agent.http_proxy_host }} -Dhttp.proxyPort={{ bamboo_agent.http_proxy_port }} -Dhttps.proxyHost={{ bamboo_agent.https_proxy_host }} -Dhttps.proxyPort={{ bamboo_agent.https_proxy_port }} -Dhttp.proxyUser={{ bamboo_agent.proxy_user }} -Dhttp.proxyPassword={{ bamboo_agent.proxy_password }}
-Environment=http_proxy=http://{{ proxy_user}}:{{ proxy_password }}@{{ proxy_host }}:{{ proxy_port }}
-Environment=https_proxy=http://{{ proxy_user}}:{{ proxy_password }}@{{ proxy_host }}:{{ proxy_port }}
-Environment=no_proxy={% for item in bamboo_agent.no_proxy %}{{ item }},{% endfor %}
+{%if http_proxy is defined and https_proxy is defined %}
+Environment="JAVA_OPTS=-Dhttp.nonProxyHosts={{ http_proxy.no_proxy | default([]) | join("|") }} -Dhttp.proxyHost={{ http_proxy.host | default('') }} -Dhttp.proxyPort={{ http_proxy.port | default('') }} -Dhttps.proxyHost={{ https_proxy.host | default('') }} -Dhttps.proxyPort={{ https_proxy.port | default('') }} -Dhttp.proxyUser={{ http_proxy.user | default('') }} -Dhttp.proxyPassword={{ http_proxy.password | default('') }}"
+
+Environment=http_proxy=http://{% if http_proxy.user is defined and http_proxy.password is defined %}{{ http_proxy.user }}:{{ http_proxy.password }}@{% endif %}{{ http_proxy.host }}:{{ http_proxy.port }}
+Environment=https_proxy=http://{% if http_proxy.user is defined and http_proxy.password is defined %}{{ http_proxy.user }}:{{ http_proxy.password }}@{% endif %}{{ https_proxy.host }}:{{ https_proxy.port }}
+
+Environment=no_proxy={{ http_proxy.no_proxy | default([]) | join(",") }}
 {% endif %}
 
 Type=forking
