@@ -10,13 +10,17 @@
   yum:
     name: "java-{{ openjdk_version }}-openjdk"
     state: installed
-  when: install_jdk and (ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux')
+  when:
+    - install_jdk
+    - ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
 
 - name: "install openjdk-{{ openjdk_version }} (apt)"
   apt:
     name: "openjdk-{{ openjdk_version }}-jdk"
     state: installed
-  when: install_jdk and (ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu')
+  when:
+    - install_jdk
+    - ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
 
 - name: Add local user
   user:
@@ -69,7 +73,7 @@
     mode: 0744
   notify: restart bambooagent
 
-- name: enable bambooagent service
+- name: Ensure service is enabled and started
   systemd:
     name: bambooagent
     enabled: yes
