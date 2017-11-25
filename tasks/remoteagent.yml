@@ -3,13 +3,13 @@
   yum:
     name: "java-{{ openjdk_version }}-openjdk"
     state: installed
-  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+  when: install_jdk and (ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux')
 
 - name: "install openjdk-{{ openjdk_version }} (apt)"
   apt:
     name: "openjdk-{{ openjdk_version }}-jdk"
     state: installed
-  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+  when: install_jdk and (ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu')
 
 - name: Add local user
   user:
@@ -65,8 +65,9 @@
 - name: enable bambooagent service
   systemd:
     name: bambooagent
-    enabled: yes 
-    daemon_reload: yes 
+    enabled: yes
+    daemon_reload: yes
+    state: started
 
 - name: Configure to not automatically add JDK capabilities
   lineinfile:

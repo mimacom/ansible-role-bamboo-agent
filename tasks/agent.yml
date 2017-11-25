@@ -56,7 +56,7 @@
     name: "{{ item.extract_path }}"
     state: directory
   with_items:
-    "{{ bamboo_agent_capabilities }}"
+    "{{ bamboo_agent_capabilities | default([]) }}"
   when: item.extract_path is defined
 
 - name: install packages
@@ -64,7 +64,7 @@
     name: "{{ item.name }}"
     state: installed
   with_items:
-    "{{ bamboo_agent_capabilities }}"
+    "{{ bamboo_agent_capabilities | default([]) }}"
   when: (item.source is defined and item.source == "repository")
 
 - name: download and extract local archives
@@ -73,7 +73,7 @@
     dest: "{{ item.extract_path}}"
     keep_newer: yes
   with_items:
-    "{{ bamboo_agent_capabilities }}"
+    "{{ bamboo_agent_capabilities | default([]) }}"
   when: (item.source is defined and item.source == "unarchive")
 
 - name: download and extract remote archives
@@ -83,7 +83,7 @@
     keep_newer: yes
     remote_src: True
   with_items:
-    "{{ bamboo_agent_capabilities }}"
+    "{{ bamboo_agent_capabilities | default([]) }}"
   when: (item.source is defined and item.source == "unarchive-remote")
 
 - name: create symlinks for applications
@@ -92,7 +92,7 @@
     path: "{{ item.1.dest }}"
     state: link
   with_subelements:
-    - "{{ bamboo_agent_capabilities }}"
+    - "{{ bamboo_agent_capabilities | default([]) }}"
     - symlinks
 
 - name: Populate PATH environment variable
@@ -106,7 +106,7 @@
     global: yes
     state: present
   with_items:
-    "{{ bamboo_agent_capabilities }}"
+    "{{ bamboo_agent_capabilities | default([]) }}"
   when: (item.source is defined and item.source == "npm")
 
 - name: Create maven home folder

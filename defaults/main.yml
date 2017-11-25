@@ -1,4 +1,6 @@
 ---
+install_jdk: true
+use_proxy: false
 openjdk_version: 1.8.0
 
 bamboo_agent_remote: false
