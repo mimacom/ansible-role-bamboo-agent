@@ -80,6 +80,31 @@ A capability has the values:
   - `properties` (List of properties which are set on remote agents. Subkeys are
     `key` and `value`)
 
+### HTTP proxy
+
+    http_proxy
+
+If set, remote agent will use this proxy for HTTP connections. This dict has the
+following values:
+
+  - `host`
+  - `port`
+  - `user` (optional)
+  - `password` (optional)
+  - `no_proxy` (optional, list of proxy exceptions. See
+    [Java Networking and Proxies](https://docs.oracle.com/javase/8/docs/technotes/guides/net/proxies.html)
+
+    https_proxy
+
+If set, remote agent will use this proxy for HTTPS connections. If unset but
+`http_proxy` set, its value will be copied to `https_proxy`. This dict has the
+following values:
+
+  - `host`
+  - `port`
+
+Other values will be used from `http_proxy`.
+
 ## Other notes for npm dependencies
 
 If you configure to install npm, you must make sure to install node by
