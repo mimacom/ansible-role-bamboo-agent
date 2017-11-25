@@ -16,6 +16,10 @@ agents (if wanted) otherwise they won't show up in Bamboo.
 Available variables are listed below, along with default values (see
 `defaults/main.yml`):
 
+    install_jdk: true
+
+Whether to install JDK or not.
+
     openjdk_version: 1.8.0
 
 The version of openJDK to install (remote agent only).
