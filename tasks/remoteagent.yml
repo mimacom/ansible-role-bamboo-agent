@@ -1,4 +1,11 @@
 ---
+- name: Set https_proxy
+  set_fact:
+    https_proxy: "{{ http_proxy }}"
+  when:
+    - https_proxy is undefined
+    - http_proxy is defined
+
 - name: "install openjdk-{{ openjdk_version }} (yum)"
   yum:
     name: "java-{{ openjdk_version }}-openjdk"
