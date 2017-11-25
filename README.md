@@ -93,9 +93,9 @@ following values:
   - `password` (optional)
   - `no_proxy` (optional, list of proxy exceptions. See [Java Networking and Proxies](https://docs.oracle.com/javase/8/docs/technotes/guides/net/proxies.html))
 
-
-
-    https_proxy
+```
+https_proxy
+```
 
 If set, remote agent will use this proxy for HTTPS connections. If unset but
 `http_proxy` set, its value will be copied to `https_proxy`. This dict has the
