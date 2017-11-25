@@ -91,8 +91,7 @@ following values:
   - `port`
   - `user` (optional)
   - `password` (optional)
-  - `no_proxy` (optional, list of proxy exceptions. See
-    [Java Networking and Proxies](https://docs.oracle.com/javase/8/docs/technotes/guides/net/proxies.html)
+  - `no_proxy` (optional, list of proxy exceptions. See [Java Networking and Proxies](https://docs.oracle.com/javase/8/docs/technotes/guides/net/proxies.html)
 
     https_proxy
 
