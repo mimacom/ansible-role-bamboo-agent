@@ -40,9 +40,10 @@ Bamboo master connection (remote agent only)
 Service user for Bamboo master node (local agent only)
 
     bamboo_agent_user: bambooagent
+    bamboo_agent_group: bambooagent
     bamboo_agent_uid: 5000
 
-Service user name and ID for systemd (remote agent only).
+Service user name, primary group and ID for systemd (remote agent only).
 
     bamboo_agent_application_folder: "/home/{{ bamboo_agent_user }}"
     bamboo_agent_data_folder: "/home/{{ bamboo_agent_user }}/bamboo-agent-home"

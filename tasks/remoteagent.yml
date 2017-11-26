@@ -22,9 +22,10 @@
     - install_jdk
     - ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
 
-- name: Add local user
+- name: Add service user
   user:
     name: "{{ bamboo_agent_user }}"
+    group: "{{ bamboo_agent_group }}"
     uid: "{{ bamboo_agent_uid }}"
 
 - name: Create data folder for agent

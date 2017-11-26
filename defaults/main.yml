@@ -11,6 +11,7 @@ bamboo_master_port: ""
 bamboo_master_user: bamboo
 
 bamboo_agent_user: bambooagent
+bamboo_agent_group: bambooagent
 bamboo_agent_uid: 5000
 bamboo_agent_application_folder: "/home/{{ bamboo_agent_user }}"
 bamboo_agent_data_folder: "/home/{{ bamboo_agent_user }}/bamboo-agent-home"
