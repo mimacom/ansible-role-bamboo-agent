@@ -15,7 +15,7 @@ Environment=no_proxy={{ http_proxy.no_proxy | default([]) | join(",") }}
 
 Type=forking
 User={{ bamboo_agent_user }}
-Group={{ bamboo_agent_group }}
+Group={{ bamboo_agent_user }}
 ExecStart={{ bamboo_agent_data_folder }}/bin/bamboo-agent.sh start
 ExecStop={{ bamboo_agent_data_folder }}/bin/bamboo-agent.sh stop
 
