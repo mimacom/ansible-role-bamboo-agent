@@ -12,8 +12,8 @@ bamboo_master_user: bamboo
 
 bamboo_agent_user: bambooagent
 bamboo_agent_uid: 5000
-bamboo_agent_application_folder: "/home/{{ bamboo_agent_user }}"
-bamboo_agent_data_folder: "/home/{{ bamboo_agent_user }}/bamboo-agent-home"
+bamboo_agent_application_folder: "/opt/{{ bamboo_agent_user }}"
+bamboo_agent_data_folder: "/opt/{{ bamboo_agent_user }}/bamboo-agent-home"
 bamboo_agent_jvm_memory: 768m
 
 bamboo_agent_npmrc: ""

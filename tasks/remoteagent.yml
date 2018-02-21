@@ -26,6 +26,7 @@
   user:
     name: "{{ bamboo_agent_user }}"
     uid: "{{ bamboo_agent_uid }}"
+    home: "{{ bamboo_agent_application_folder }}"
 
 - name: Create data folder for agent
   file:
