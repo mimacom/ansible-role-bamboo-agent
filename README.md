@@ -24,13 +24,13 @@ Whether to install JDK or not.
 
 The version of openJDK to install (remote agent only).
 
-    bamboo_agent_remote: false
+    bamboo_agent_remote: False
 
 Whether this is a remote agent or not.
 
     bamboo_master_version: ""
     bamboo_master_fqdn: ""
-    bamboo_master_https: false
+    bamboo_master_https: False
     bamboo_master_port: ""
 
 Bamboo master connection (remote agent only)
