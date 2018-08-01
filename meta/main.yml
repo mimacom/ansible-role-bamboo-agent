@@ -5,7 +5,7 @@ galaxy_info:
 
   license: Apache 2
 
-  min_ansible_version: 1.2
+  min_ansible_version: 2.4
 
   # Optionally specify the branch Galaxy will use when accessing the GitHub
   # repo for this role. During role install, if no tags are available,
